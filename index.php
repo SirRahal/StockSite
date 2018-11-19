@@ -1,3 +1,4 @@
 <?php 
 
-echo("yay, you're useing php");
+echo("yay");
+echo("you're useing php");
