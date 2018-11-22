@@ -1,0 +1,14 @@
+1. Get stock prices
+2. Show me upcoming ex-dates
+	a. get api
+	b. possibbly create calendar
+4. Create Account for website
+3. Connect to Robhinhood. 
+
+
+Sari's Goals
+1. Set up site
+2. Set up repo
+3. Set up API
+4. Make call for Prices
+5. Make call for X-Date
