@@ -102,11 +102,6 @@
             <h1>Superhero</h1>
             <p class="lead">The brave and the blue</p>
           </div>
-          <div class="col-lg-4 col-md-5 col-sm-6">
-            <div class="sponsor">
-              <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CKYIE23N&placement=bootswatchcom" id="_carbonads_js"></script>
-            </div>
-          </div>
         </div>
       </div>
 
