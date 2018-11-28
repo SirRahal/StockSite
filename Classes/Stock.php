@@ -6,6 +6,8 @@
  * Time: 5:31 PM
  */
 
+include_once ('db_connect.php');
+
 class Stock
 {
 
@@ -36,12 +38,14 @@ class Stock
 			$this->PercentChange = $companyinfo->{'10. change percent'};
         }
 		
-		//$url = 'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords='.$symbol.'&apikey=2FLNEONK7AMR8Y79'; // path to your JSON file
-        //$data = file_get_contents($url); // put the contents of the file into a variable
-        //$stockData = json_decode($data); // decode the JSON feed
+        $conn = new db_connect();
 
-        //foreach($stockData as $companyinfo) {
-        //    $this->Name = $companyinfo->{'2. name'};
-        //}
+        $qry = $conn->doQuery("SELECT `name` FROM stock_site.stocks WHERE `symbol` = '".$this->Symbol."'");
+
+        while ($row = $qry->fetch_row()) {
+            $this->Name = $row[0];
+        }
+
+
     }
 }
