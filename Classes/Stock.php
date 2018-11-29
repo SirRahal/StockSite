@@ -18,7 +18,7 @@ class Stock
     var $Volume;
 	var $PercentChange;
 	var $DividendAmount;
-	var $DividendDate;
+    var $DividendPercent;
 
 	/*
 	 * This is the main, when this
@@ -28,10 +28,8 @@ class Stock
 
         $this->setDataFromAlphaVantage();
         $this->Name = $this->getName();
-
-        $this->DividendAmount = $this->getDividendAmount();
-        $this->DividendDate = $this->getDividendDate();
-
+        $this->setAPIIextrading();
+        $this->DividendPercent = $this->getDividendPercent();
     }
 
     /*
@@ -55,7 +53,26 @@ class Stock
             $this->PercentChange = $companyinfo->{'10. change percent'};
         }
     }
+    /*
+     * Sets the Dividend =
+     * */
+    function setAPIIextrading(){
+        stream_context_set_default([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ]
+        ]);
 
+        $url = 'https://api.iextrading.com/1.0/stock/'. $this->Symbol .'/dividends/1y'; // path to your JSON file
+        $data = file_get_contents($url); // put the contents of the file into a variable
+        $stockData = json_decode($data); // decode the JSON feed
+
+        if($stockData[0] != null){ 
+            $this->EXDate = $stockData[0]->{'exDate'};
+            $this->DividendAmount = $stockData[0]->{'amount'};
+        }
+    }
     /*
      * Grabs name from the database
      * */
@@ -69,19 +86,11 @@ class Stock
         return $results;
     }
 
-    /*
-     * TODO: This needs to call an API and set the Dividend amount
-     * */
-    function getDividendAmount(){
-        $result = "";
-        return $result;
-    }
-
-    /*
-     * TODO: This needs to call an API and set the Dividend date
-     * */
-    function getDividendDate(){
-        $result = "";
-        return $result;
+    function getDividendPercent(){
+        if($this->Price != 0 && $this->DividendAmount != 0){
+            return  $this->DividendAmount/$this->Price;
+        }else{
+            return 0;
+        }
     }
 }
