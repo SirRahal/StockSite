@@ -16,23 +16,23 @@ class Stock
     var $Price;
     var $EXDate;
     var $Volume;
-	var $PercentChange;
-	var $DividendAmount;
-	var $DividendDate;
-	var $Sector;
-	var $Industry;
-	var $UpdatedTimeStamp;
+    var $PercentChange;
+    var $DividendAmount;
+    var $DividendDate;
+    var $Sector;
+    var $Industry;
+    var $UpdatedTimeStamp;
+    var $DividendPercentage;
 
-	/*
-	 * This is the main, when this
-	 * */
+    /*
+     * This is the main, when this
+     * */
     function __construct($symbol){
         $this->Symbol = $symbol;
         $this->setStockDataFromDB();
         if( strtotime('-7 day') < $this->UpdatedTimeStamp){
             $this->setDataFromAlphaVantage();
-            $this->DividendAmount = $this->getDividendAmount();
-            $this->DividendDate = $this->getDividendDate();
+            $this->setAPIIextrading();
             $this->UpdateRecordInDB();
         }
     }
@@ -114,18 +114,30 @@ class Stock
     }
 
     /*
-     * TODO: This needs to call an API and set the Dividend amount
+     * Sets the Dividend info from api
      * */
-    function getDividendAmount(){
-        $result = "";
-        return $result;
+    function setAPIIextrading(){
+        stream_context_set_default([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ]
+        ]);
+
+        $url = 'https://api.iextrading.com/1.0/stock/'. $this->Symbol .'/dividends/1y'; // path to your JSON file
+        $data = file_get_contents($url); // put the contents of the file into a variable
+        $stockData = json_decode($data); // decode the JSON feed
+
+        if($stockData[0] != null){
+            $this->EXDate = $stockData[0]->{'exDate'};
+            $this->DividendAmount = $stockData[0]->{'amount'};
+        }
+
+        if($this->Price != 0 && $this->DividendAmount != 0){
+            $this->DividendPercentage = $this->DividendAmount/$this->Price;
+        }else{
+            $this->DividendPercentage =  0;
+        }
     }
 
-    /*
-     * TODO: This needs to call an API and set the Dividend date
-     * */
-    function getDividendDate(){
-        $result = "";
-        return $result;
-    }
 }
