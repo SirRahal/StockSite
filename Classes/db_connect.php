@@ -21,5 +21,14 @@ class db_connect
         return $result;
     }
 
+    public function doNonQuery($qry){
+        try{
+            $mysqli = new mysqli($this->servername, $this->username, $this->password, "stock_site");
+            $mysqli->query($qry);
+            $mysqli->close();
+        }catch (Exception $ex){
+            echo "Error: "+$ex;
+        }
+    }
 
 }

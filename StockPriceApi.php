@@ -13,3 +13,5 @@ echo "<br/>";
 echo "Volume: ". number_format($stock->Volume);
 echo "<br/>";
 echo "Percent Changed: ". $stock->PercentChange;
+echo "<br/>";
+echo "EXDate: ". $stock->EXDate;
