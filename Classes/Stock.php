@@ -27,8 +27,8 @@ class Stock
     /*
      * This is the main, when this
      * */
-    function __construct($symbol){
-        $this->Symbol = $symbol;
+    function __construct($stock){
+        $this->Symbol = $stock;
         $this->setStockDataFromDB();
         if( strtotime('-7 day') < $this->UpdatedTimeStamp){
             $this->setDataFromAlphaVantage();
@@ -79,7 +79,7 @@ class Stock
             $this->Name = $row[0];
             $this->Sector = $row[1];
             $this->Industry = $row[2];
-            $this->Price = floatval($row[3]);
+            $this->Price = $row[3];
             $this->EXDate = $row[4];
             $this->Volume = $row[5];
             $this->PercentChange = $row[6];
