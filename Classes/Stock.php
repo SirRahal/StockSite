@@ -30,11 +30,11 @@ class Stock
     function __construct($stock){
         $this->Symbol = $stock;
         $this->setStockDataFromDB();
-        if( strtotime('-7 day') < $this->UpdatedTimeStamp){
+        //if( strtotime('-1 day') < $this->UpdatedTimeStamp){
             $this->setDataFromAlphaVantage();
             $this->setAPIIextrading();
             $this->UpdateRecordInDB();
-        }
+        //}
     }
 
     function UpdateRecordInDB(){
@@ -73,7 +73,8 @@ class Stock
      * */
     function setStockDataFromDB(){
         $conn = new db_connect();
-        $qryString = "SELECT `name`,`sector`,`industry`,`price`,`exDate`,`volume`,`percentChange`, `dividendAmount`, `dividendDate`, `updatedTimeStamp` FROM stock_site.stocks WHERE `symbol` = '".$this->Symbol."'";
+        $qryString = "SELECT `name`,`sector`,`industry`,`price`,`exDate`,`volume`,`percentChange`, `dividendAmount`, `dividendDate`, `updatedTimeStamp` FROM stock_site.stocks WHERE `symbol` = '".
+                    $this->Symbol."'";
         $qry = $conn->doQuery($qryString);
         while ($row = $qry->fetch_row()) {
             $this->Name = $row[0];
@@ -124,13 +125,15 @@ class Stock
             ]
         ]);
 
-        $url = 'https://api.iextrading.com/1.0/stock/'. $this->Symbol .'/dividends/1y'; // path to your JSON file
+        $url = 'https://api.iextrading.com/1.0/stock/'. $this->Symbol .'/dividends/6m'; // path to your JSON file
         $data = file_get_contents($url); // put the contents of the file into a variable
         $stockData = json_decode($data); // decode the JSON feed
 
-        if($stockData[0] != null){
-            $this->EXDate = $stockData[0]->{'exDate'};
-            $this->DividendAmount = $stockData[0]->{'amount'};
+        if($stockData != null){
+            if($stockData[0] != null){
+                $this->EXDate = $stockData[0]->{'exDate'};
+                $this->DividendAmount = $stockData[0]->{'amount'};
+            }
         }
 
         if($this->Price != 0 && $this->DividendAmount != 0){
